@@ -1,16 +1,15 @@
 import { useState } from "react";
 import type { ChatStatus } from "ai";
-import { Globe, ListChecks } from "lucide-react";
+import { Globe, ListChecks, Paperclip, X } from "lucide-react";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
   PromptInputActionMenu,
   PromptInputActionMenuContent,
   PromptInputActionMenuTrigger,
-  PromptInputAttachments,
-  PromptInputAttachment,
   PromptInputButton,
   PromptInputFooter,
+  PromptInputHeader,
   PromptInputSelect,
   PromptInputSelectContent,
   PromptInputSelectItem,
@@ -19,6 +18,7 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
+  usePromptInputAttachments,
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { MODELS } from "@/lib/store";
@@ -28,6 +28,32 @@ export type ComposerSubmit = {
   files?: PromptInputMessage["files"];
   research: boolean;
 };
+
+function Attachments() {
+  const attachments = usePromptInputAttachments();
+  if (attachments.files.length === 0) return null;
+  return (
+    <PromptInputHeader className="flex flex-wrap gap-2">
+      {attachments.files.map((file) => (
+        <span
+          key={file.id}
+          className="flex max-w-[220px] items-center gap-2 rounded-full bg-secondary px-3 py-1 text-[13px] text-secondary-foreground"
+        >
+          <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
+          <span className="truncate">{file.filename ?? "attachment"}</span>
+          <button
+            type="button"
+            aria-label="Remove attachment"
+            onClick={() => attachments.remove(file.id)}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-3.5" />
+          </button>
+        </span>
+      ))}
+    </PromptInputHeader>
+  );
+}
 
 export function AgentComposer({
   placeholder = "Assign a task or ask anything",
@@ -50,21 +76,18 @@ export function AgentComposer({
 
   return (
     <PromptInput
-      accept="image/*,text/*,application/pdf"
-      className="rounded-3xl border-border bg-card shadow-composer"
+      accept="image/*,text/plain,application/pdf"
+      className="rounded-3xl bg-card shadow-composer"
       globalDrop
       maxFiles={4}
       multiple
-      onSubmit={(message, event) => {
+      onSubmit={(message) => {
         const text = (message.text ?? "").trim();
         if (!text && !message.files?.length) return;
         onSubmit({ text, files: message.files, research });
-        event.currentTarget.reset();
       }}
     >
-      <PromptInputAttachments>
-        {(attachment) => <PromptInputAttachment data={attachment} />}
-      </PromptInputAttachments>
+      <Attachments />
       <PromptInputTextarea autoFocus={autoFocus} placeholder={placeholder} />
       <PromptInputFooter>
         <PromptInputTools>
@@ -83,7 +106,7 @@ export function AgentComposer({
           </PromptInputButton>
           <PromptInputButton disabled variant="ghost">
             <ListChecks className="size-4" />
-            <span className="hidden sm:inline">Plan mode on</span>
+            <span className="hidden sm:inline">Plan mode</span>
           </PromptInputButton>
         </PromptInputTools>
         <div className="flex items-center gap-2">
