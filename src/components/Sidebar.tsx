@@ -35,13 +35,14 @@ import {
   type Task,
 } from "@/lib/store";
 
-const nav: Array<{ label: string; icon: LucideIcon; to: string }> = [
+const nav = [
   { label: "New task", icon: Wand2, to: "/" },
   { label: "Agent", icon: SquareDashed, to: "/agent" },
   { label: "Plugins", icon: LayoutGrid, to: "/plugins" },
   { label: "Scheduled", icon: Clock, to: "/scheduled" },
   { label: "Library", icon: BookOpen, to: "/library" },
-];
+] as const;
+
 
 function TaskRow({ task, active }: { task: Task; active: boolean }) {
   const navigate = useNavigate();
