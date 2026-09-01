@@ -37,14 +37,11 @@ function Home() {
   const tasks = useStore((s) => s.tasks);
   const [model, setModel] = useState("superintelligence-1.0");
 
-  const start = (prompt: string, research: boolean) => {
+  const start = (prompt: string) => {
     const task = createTask({ prompt, model });
-    navigate({
-      to: "/task/$taskId",
-      params: { taskId: task.id },
-      search: research ? undefined : { research: "off" },
-    });
+    navigate({ to: "/task/$taskId", params: { taskId: task.id } });
   };
+
 
   const recent = [...tasks].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 4);
 
