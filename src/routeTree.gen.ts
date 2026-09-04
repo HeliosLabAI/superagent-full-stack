@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as ScheduledRouteImport } from './routes/scheduled'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -18,6 +19,11 @@ import { Route as TaskTaskIdRouteImport } from './routes/task.$taskId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PluginsRoute = PluginsRouteImport.update({
@@ -43,6 +49,7 @@ const TaskTaskIdRoute = TaskTaskIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
   '/plugins': typeof PluginsRoute
   '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
   '/plugins': typeof PluginsRoute
   '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/library': typeof LibraryRoute
   '/plugins': typeof PluginsRoute
   '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
@@ -65,15 +74,24 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
+  fullPaths:
+    '/' | '/library' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
+  to:
+    '/' | '/library' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
   id:
-    '__root__' | '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
+    | '__root__'
+    | '/'
+    | '/library'
+    | '/plugins'
+    | '/scheduled'
+    | '/api/chat'
+    | '/task/$taskId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LibraryRoute: typeof LibraryRoute
   PluginsRoute: typeof PluginsRoute
   ScheduledRoute: typeof ScheduledRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -87,6 +105,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plugins': {
@@ -122,6 +147,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LibraryRoute: LibraryRoute,
   PluginsRoute: PluginsRoute,
   ScheduledRoute: ScheduledRoute,
   ApiChatRoute: ApiChatRoute,
