@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PluginsRouteImport } from './routes/plugins'
+import { Route as ScheduledRouteImport } from './routes/scheduled'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as TaskTaskIdRouteImport } from './routes/task.$taskId'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const PluginsRoute = PluginsRouteImport.update({
   id: '/plugins',
   path: '/plugins',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScheduledRoute = ScheduledRouteImport.update({
+  id: '/scheduled',
+  path: '/scheduled',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -38,12 +44,14 @@ const TaskTaskIdRoute = TaskTaskIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/plugins': typeof PluginsRoute
+  '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
   '/task/$taskId': typeof TaskTaskIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/plugins': typeof PluginsRoute
+  '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
   '/task/$taskId': typeof TaskTaskIdRoute
 }
@@ -51,20 +59,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/plugins': typeof PluginsRoute
+  '/scheduled': typeof ScheduledRoute
   '/api/chat': typeof ApiChatRoute
   '/task/$taskId': typeof TaskTaskIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/plugins' | '/api/chat' | '/task/$taskId'
+  fullPaths: '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/plugins' | '/api/chat' | '/task/$taskId'
-  id: '__root__' | '/' | '/plugins' | '/api/chat' | '/task/$taskId'
+  to: '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
+  id:
+    '__root__' | '/' | '/plugins' | '/scheduled' | '/api/chat' | '/task/$taskId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PluginsRoute: typeof PluginsRoute
+  ScheduledRoute: typeof ScheduledRoute
   ApiChatRoute: typeof ApiChatRoute
   TaskTaskIdRoute: typeof TaskTaskIdRoute
 }
@@ -83,6 +94,13 @@ declare module '@tanstack/react-router' {
       path: '/plugins'
       fullPath: '/plugins'
       preLoaderRoute: typeof PluginsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scheduled': {
+      id: '/scheduled'
+      path: '/scheduled'
+      fullPath: '/scheduled'
+      preLoaderRoute: typeof ScheduledRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -105,6 +123,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PluginsRoute: PluginsRoute,
+  ScheduledRoute: ScheduledRoute,
   ApiChatRoute: ApiChatRoute,
   TaskTaskIdRoute: TaskTaskIdRoute,
 }
