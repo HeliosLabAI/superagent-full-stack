@@ -26,7 +26,7 @@ export function CommandPalette({
   };
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange} title="Search">
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput placeholder="Search tasks, pages and actions…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>

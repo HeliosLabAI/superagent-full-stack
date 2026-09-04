@@ -12,7 +12,7 @@ export function AppShell({
   children,
   scroll = true,
 }: {
-  activeId?: string;
+  activeId?: string | undefined;
   title?: ReactNode;
   subtitle?: string;
   right?: ReactNode;

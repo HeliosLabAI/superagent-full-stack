@@ -7,12 +7,13 @@ export type Task = {
   icon: string;
   updatedAt: number;
   createdAt: number;
-  projectId?: string;
-  pinned?: boolean;
+  projectId?: string | undefined;
+  pinned?: boolean | undefined;
+  files?: Record<string, string> | undefined;
   model: string;
   messages: UIMessage[];
   /** Prompt typed on the launcher that the task page should auto-send once. */
-  pendingPrompt?: string;
+  pendingPrompt?: string | undefined;
 };
 
 export type Project = { id: string; name: string; createdAt: number };

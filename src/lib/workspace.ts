@@ -46,13 +46,14 @@ export function runFileTool(
   input: Record<string, unknown>,
 ): Record<string, unknown> {
   const files = { ...getFiles(taskId) };
-  const path = typeof input.path === "string" ? norm(input.path) : "";
+  const rawPath = input["path"];
+  const path = typeof rawPath === "string" ? norm(rawPath) : "";
 
   switch (tool) {
     case "list_files": {
       const paths = Object.keys(files).sort();
       return {
-        files: paths.map((p) => ({ path: p, lines: lineCount(files[p]), bytes: files[p].length })),
+        files: paths.map((p) => ({ path: p, lines: lineCount(files[p] ?? ""), bytes: (files[p] ?? "").length })),
         count: paths.length,
       };
     }
@@ -60,10 +61,11 @@ export function runFileTool(
       if (!(path in files)) {
         return { path, error: `File not found: ${path || "(empty path)"}` };
       }
-      return { path, lines: lineCount(files[path]), content: files[path] };
+      return { path, lines: lineCount(files[path] ?? ""), content: files[path] ?? "" };
     }
     case "write_file": {
-      const content = typeof input.content === "string" ? input.content : "";
+      const rawContent = input["content"];
+      const content = typeof rawContent === "string" ? rawContent : "";
       const existed = path in files;
       if (!path) return { error: "A path is required." };
       files[path] = content;
@@ -77,10 +79,12 @@ export function runFileTool(
       };
     }
     case "edit_file": {
-      const find = typeof input.find === "string" ? input.find : "";
-      const replace = typeof input.replace === "string" ? input.replace : "";
+      const rawFind = input["find"];
+      const find = typeof rawFind === "string" ? rawFind : "";
+      const rawReplace = input["replace"];
+      const replace = typeof rawReplace === "string" ? rawReplace : "";
       if (!(path in files)) return { path, error: `File not found: ${path}` };
-      const before = files[path];
+      const before = files[path] ?? "";
       if (!find || !before.includes(find)) {
         return { path, error: `Text to replace was not found in ${path}.`, find };
       }
