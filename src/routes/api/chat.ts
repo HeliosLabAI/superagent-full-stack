@@ -83,10 +83,10 @@ export const Route = createFileRoute("/api/chat")({
         const result = streamText({
           model: gateway(resolveModel(body.model)),
           system: SYSTEM_PROMPT,
-          messages: convertToModelMessages(messages),
+          messages: await convertToModelMessages(messages),
           stopWhen: stepCountIs(50),
           tools: {
-            ...fileTools,
+            ...(fileTools as Record<string, never>),
             plan: tool({
               description:
                 "Publish the step-by-step plan for the current task so the user can follow progress. Call once, early.",

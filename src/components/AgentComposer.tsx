@@ -122,7 +122,10 @@ export function AgentComposer({
               ))}
             </PromptInputSelectContent>
           </PromptInputSelect>
-          <PromptInputSubmit onStop={onStop} status={status} />
+          <PromptInputSubmit
+            {...(onStop ? { onStop } : {})}
+            {...(status ? { status } : {})}
+          />
         </div>
       </PromptInputFooter>
     </PromptInput>
