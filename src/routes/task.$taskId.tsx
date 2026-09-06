@@ -84,7 +84,7 @@ type ToolPartLike = {
   errorText?: string;
 };
 
-function isToolPart(part: { type: string }): part is ToolPartLike {
+function isToolPart(part: { type: string }): part is { type: string } & ToolPartLike {
   return part.type.startsWith("tool-") || part.type === "dynamic-tool";
 }
 
@@ -129,8 +129,8 @@ function TracePart({ part }: { part: ToolPartLike }) {
   if (name === "plan") return <PlanCard input={part.input} output={part.output} />;
 
   const out = part.output as Record<string, unknown> | undefined;
-  const error = part.errorText ?? (typeof out?.error === "string" ? out.error : undefined);
-  const path = typeof out?.path === "string" ? out.path : undefined;
+  const error = part.errorText ?? (typeof out?.["error"] === "string" ? (out["error"] as string) : undefined);
+  const path = typeof out?.["path"] === "string" ? (out["path"] as string) : undefined;
 
   return (
     <Tool
@@ -149,8 +149,11 @@ function TracePart({ part }: { part: ToolPartLike }) {
             <AlertTriangle className="mt-0.5 size-4 shrink-0" />
             <span>{error}</span>
           </div>
-        ) : typeof out?.content === "string" ? (
-          <CodeBlock code={out.content} language={(path ?? "").split(".").pop() ?? "text"} />
+        ) : typeof out?.["content"] === "string" ? (
+          <CodeBlock
+            code={out["content"] as string}
+            language={((path ?? "").split(".").pop() ?? "text") as never}
+          />
         ) : (
           <ToolOutput output={part.output} errorText={undefined} />
         )}
@@ -213,7 +216,9 @@ function TaskPage() {
   const traceParts = useMemo(
     () =>
       messages.flatMap((m) =>
-        m.parts.filter(isToolPart).map((p) => ({ ...p, key: `${m.id}-${p.toolCallId}` })),
+        (m.parts as { type: string }[])
+        .filter(isToolPart)
+        .map((p) => ({ ...p, key: `${m.id}-${p.toolCallId}` })),
       ),
     [messages],
   );
@@ -288,7 +293,7 @@ function TaskPage() {
               )}
               {messages.map((message) => {
                 const text = messageText(message as UIMessage);
-                const tools = message.parts.filter(isToolPart);
+                const tools = (message.parts as { type: string }[]).filter(isToolPart);
                 return (
                   <div key={message.id} className="space-y-3">
                     {message.role === "assistant" && tools.length > 0 && (
@@ -392,7 +397,7 @@ function TaskPage() {
                   patchTask(taskId, { model: id });
                 }}
                 onSubmit={({ text, files: attachments }) =>
-                  void sendMessage({ text, files: attachments })
+                  void sendMessage(attachments?.length ? { text, files: attachments } : { text })
                 }
                 placeholder="Reply, refine or assign the next step"
               />
@@ -459,7 +464,7 @@ function TaskPage() {
                         <FileText className="size-3.5 shrink-0 text-muted-foreground" />
                         <span className="truncate">{name}</span>
                         <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
-                          {files[name].split("\n").length}L
+                          {(files[name] ?? "").split("\n").length}L
                         </span>
                       </button>
                       <button
@@ -493,7 +498,7 @@ function TaskPage() {
                 {activeFile ? (
                   <CodeBlock
                     code={getFiles(taskId)[activeFile] || "(empty file)"}
-                    language={activeFile.split(".").pop() ?? "text"}
+                    language={(activeFile.split(".").pop() ?? "text") as never}
                   />
                 ) : (
                   <p className="text-[13px] text-muted-foreground">No file selected.</p>
