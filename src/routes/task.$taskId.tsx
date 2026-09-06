@@ -187,7 +187,7 @@ function TaskPage() {
         (toolCall.input ?? {}) as Record<string, unknown>,
       );
       addToolOutput({ tool: name as never, toolCallId: toolCall.toolCallId, output });
-      if (typeof output.path === "string" && !output.error) setOpenFile(output.path);
+      if (typeof output["path"] === "string" && !output["error"]) setOpenFile(output["path"]);
     },
     onError: (e) => toast.error(e.message || "The agent run failed."),
     onFinish: () => spendCredit(1),
