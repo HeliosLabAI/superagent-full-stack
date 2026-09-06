@@ -86,7 +86,7 @@ export const Route = createFileRoute("/api/chat")({
           messages: await convertToModelMessages(messages),
           stopWhen: stepCountIs(50),
           tools: {
-            ...(fileTools as Record<string, never>),
+            ...(fileTools as unknown as Record<string, never>),
             plan: tool({
               description:
                 "Publish the step-by-step plan for the current task so the user can follow progress. Call once, early.",
