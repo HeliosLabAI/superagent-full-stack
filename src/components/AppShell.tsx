@@ -47,13 +47,8 @@ export function AppShell({
               <p className="truncate text-[13px] text-muted-foreground">{subtitle}</p>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            {right}
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[14px] font-medium">
-              <Sparkles className="size-4 text-muted-foreground" />
-              {credits}
-            </div>
-          </div>
+          {right && <div className="flex items-center gap-2">{right}</div>}
+
         </header>
         <div className={scroll ? "min-h-0 flex-1 overflow-y-auto" : "flex min-h-0 flex-1 flex-col"}>
           {children}
