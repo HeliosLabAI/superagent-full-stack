@@ -104,10 +104,6 @@ export function AgentComposer({
             <Globe className="size-4" />
             <span className="hidden sm:inline">Research</span>
           </PromptInputButton>
-          <PromptInputButton disabled variant="ghost">
-            <ListChecks className="size-4" />
-            <span className="hidden sm:inline">Plan mode</span>
-          </PromptInputButton>
         </PromptInputTools>
         <div className="flex items-center gap-2">
           <PromptInputSelect onValueChange={onModelChange} value={model}>
