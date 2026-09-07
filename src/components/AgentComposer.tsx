@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChatStatus } from "ai";
-import { Globe, ListChecks, Paperclip, X } from "lucide-react";
+import { Globe, Paperclip, X } from "lucide-react";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
