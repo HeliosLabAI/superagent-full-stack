@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChatStatus } from "ai";
-import { Globe, ListChecks, Paperclip, X } from "lucide-react";
+import { Globe, Paperclip, X } from "lucide-react";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -103,10 +103,6 @@ export function AgentComposer({
           >
             <Globe className="size-4" />
             <span className="hidden sm:inline">Research</span>
-          </PromptInputButton>
-          <PromptInputButton disabled variant="ghost">
-            <ListChecks className="size-4" />
-            <span className="hidden sm:inline">Plan mode</span>
           </PromptInputButton>
         </PromptInputTools>
         <div className="flex items-center gap-2">

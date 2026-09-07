@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { BookOpen, Clock, LayoutGrid, MessageSquare, Plus } from "lucide-react";
+import { MessageSquare, Plus } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -27,21 +27,12 @@ export function CommandPalette({
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search tasks, pages and actions…" />
+      <CommandInput placeholder="Search tasks…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Actions">
           <CommandItem onSelect={() => go(() => navigate({ to: "/" }))}>
             <Plus className="size-4" /> New task
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate({ to: "/plugins" }))}>
-            <LayoutGrid className="size-4" /> Plugins
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate({ to: "/scheduled" }))}>
-            <Clock className="size-4" /> Scheduled runs
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate({ to: "/library" }))}>
-            <BookOpen className="size-4" /> Library
           </CommandItem>
         </CommandGroup>
         {tasks.length > 0 && (

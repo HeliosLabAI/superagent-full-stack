@@ -8,16 +8,13 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
-  BookmarkPlus,
   Copy,
   FilePlus2,
   FileText,
   Files,
   Globe,
   ListChecks,
-  Pencil,
   RefreshCw,
-  Share2,
   Terminal,
   Trash2,
 } from "lucide-react";
@@ -49,9 +46,7 @@ import {
   modelName,
   patchTask,
   relativeTime,
-  saveToLibrary,
   setTaskMessages,
-  spendCredit,
   useStore,
 } from "@/lib/store";
 import { getFiles, isFileTool, runFileTool } from "@/lib/workspace";
@@ -167,7 +162,6 @@ function TaskPage() {
   const navigate = useNavigate();
   const task = useStore((s) => s.tasks.find((t) => t.id === taskId));
   const files = useStore((s) => s.tasks.find((t) => t.id === taskId)?.files ?? {});
-  const research = useStore((s) => s.plugins.web_research);
   const [model, setModel] = useState(task?.model ?? "superintelligence-1.0");
   const [openFile, setOpenFile] = useState<string | null>(null);
   const [tab, setTab] = useState<"trace" | "files">("trace");
@@ -176,7 +170,7 @@ function TaskPage() {
   const { messages, sendMessage, status, stop, regenerate, error, addToolOutput } = useChat({
     id: taskId,
     messages: task?.messages ?? [],
-    transport: new DefaultChatTransport({ api: "/api/chat", body: { model, research } }),
+    transport: new DefaultChatTransport({ api: "/api/chat", body: { model, research: true } }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onToolCall: ({ toolCall }) => {
       const name = toolCall.toolName;
@@ -190,7 +184,6 @@ function TaskPage() {
       if (typeof output["path"] === "string" && !output["error"]) setOpenFile(output["path"]);
     },
     onError: (e) => toast.error(e.message || "The agent run failed."),
-    onFinish: () => spendCredit(1),
   });
 
   // Persist the live conversation with the task.
@@ -251,33 +244,6 @@ function TaskPage() {
       title={task.title}
       subtitle={`${modelName(task.model)} · updated ${relativeTime(task.updatedAt)}`}
       scroll={false}
-      right={
-        <>
-          <button
-            type="button"
-            aria-label="Rename task"
-            onClick={() => {
-              const next = window.prompt("Rename task", task.title);
-              if (next?.trim()) patchTask(taskId, { title: next.trim() });
-            }}
-            className="rounded-full border border-border bg-card p-2 text-muted-foreground hover:bg-accent"
-          >
-            <Pencil className="size-4" />
-          </button>
-          <button
-            type="button"
-            aria-label="Share task"
-            onClick={() => {
-              void navigator.clipboard
-                .writeText(window.location.href)
-                .then(() => toast.success("Task link copied"));
-            }}
-            className="rounded-full border border-border bg-card p-2 text-muted-foreground hover:bg-accent"
-          >
-            <Share2 className="size-4" />
-          </button>
-        </>
-      }
     >
       <div className="flex min-h-0 flex-1">
         {/* Left: conversation */}
@@ -356,17 +322,6 @@ function TaskPage() {
                           className="rounded-md p-1.5 text-muted-foreground hover:bg-accent disabled:opacity-40"
                         >
                           <RefreshCw className="size-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label="Save to library"
-                          onClick={() => {
-                            saveToLibrary({ taskId, title: task.title, content: text });
-                            toast.success("Saved to library");
-                          }}
-                          className="rounded-md p-1.5 text-muted-foreground hover:bg-accent"
-                        >
-                          <BookmarkPlus className="size-3.5" />
                         </button>
                       </div>
                     )}
