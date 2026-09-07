@@ -1,8 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { CommandPalette } from "@/components/CommandPalette";
-import { hydrate, useStore } from "@/lib/store";
+import { hydrate } from "@/lib/store";
 
 export function AppShell({
   activeId,
@@ -20,11 +19,11 @@ export function AppShell({
   scroll?: boolean;
 }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const credits = useStore((s) => s.credits);
 
   useEffect(() => {
     hydrate();
   }, []);
+
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
