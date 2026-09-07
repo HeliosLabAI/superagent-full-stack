@@ -1,15 +1,7 @@
-import { useState } from "react";
 import type { ChatStatus } from "ai";
-import { Globe, Paperclip, X } from "lucide-react";
 import {
   PromptInput,
-  PromptInputActionAddAttachments,
-  PromptInputActionMenu,
-  PromptInputActionMenuContent,
-  PromptInputActionMenuTrigger,
-  PromptInputButton,
   PromptInputFooter,
-  PromptInputHeader,
   PromptInputSelect,
   PromptInputSelectContent,
   PromptInputSelectItem,
@@ -17,43 +9,10 @@ import {
   PromptInputSelectValue,
   PromptInputSubmit,
   PromptInputTextarea,
-  PromptInputTools,
-  usePromptInputAttachments,
-  type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { MODELS } from "@/lib/store";
 
-export type ComposerSubmit = {
-  text: string;
-  files?: PromptInputMessage["files"];
-  research: boolean;
-};
-
-function Attachments() {
-  const attachments = usePromptInputAttachments();
-  if (attachments.files.length === 0) return null;
-  return (
-    <PromptInputHeader className="flex flex-wrap gap-2">
-      {attachments.files.map((file) => (
-        <span
-          key={file.id}
-          className="flex max-w-[220px] items-center gap-2 rounded-full bg-secondary px-3 py-1 text-[13px] text-secondary-foreground"
-        >
-          <Paperclip className="size-3.5 shrink-0 text-muted-foreground" />
-          <span className="truncate">{file.filename ?? "attachment"}</span>
-          <button
-            type="button"
-            aria-label="Remove attachment"
-            onClick={() => attachments.remove(file.id)}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <X className="size-3.5" />
-          </button>
-        </span>
-      ))}
-    </PromptInputHeader>
-  );
-}
+export type ComposerSubmit = { text: string };
 
 export function AgentComposer({
   placeholder = "Assign a task or ask anything",
@@ -72,57 +31,32 @@ export function AgentComposer({
   onSubmit: (value: ComposerSubmit) => void;
   autoFocus?: boolean;
 }) {
-  const [research, setResearch] = useState(true);
-
   return (
     <PromptInput
-      accept="image/*,text/plain,application/pdf"
-      className="rounded-3xl bg-card shadow-composer"
-      globalDrop
-      maxFiles={4}
-      multiple
+      className="rounded-2xl border border-border bg-card shadow-composer"
       onSubmit={(message) => {
         const text = (message.text ?? "").trim();
-        if (!text && !message.files?.length) return;
-        onSubmit({ text, files: message.files, research });
+        if (text) onSubmit({ text });
       }}
     >
-      <Attachments />
       <PromptInputTextarea autoFocus={autoFocus} placeholder={placeholder} />
-      <PromptInputFooter>
-        <PromptInputTools>
-          <PromptInputActionMenu>
-            <PromptInputActionMenuTrigger />
-            <PromptInputActionMenuContent>
-              <PromptInputActionAddAttachments label="Add files or images" />
-            </PromptInputActionMenuContent>
-          </PromptInputActionMenu>
-          <PromptInputButton
-            onClick={() => setResearch((v) => !v)}
-            variant={research ? "default" : "ghost"}
-          >
-            <Globe className="size-4" />
-            <span className="hidden sm:inline">Research</span>
-          </PromptInputButton>
-        </PromptInputTools>
-        <div className="flex items-center gap-2">
-          <PromptInputSelect onValueChange={onModelChange} value={model}>
-            <PromptInputSelectTrigger>
-              <PromptInputSelectValue />
-            </PromptInputSelectTrigger>
-            <PromptInputSelectContent>
-              {MODELS.map((m) => (
-                <PromptInputSelectItem key={m.id} value={m.id}>
-                  {m.name}
-                </PromptInputSelectItem>
-              ))}
-            </PromptInputSelectContent>
-          </PromptInputSelect>
-          <PromptInputSubmit
-            {...(onStop ? { onStop } : {})}
-            {...(status ? { status } : {})}
-          />
-        </div>
+      <PromptInputFooter className="justify-between border-0">
+        <PromptInputSelect onValueChange={onModelChange} value={model}>
+          <PromptInputSelectTrigger>
+            <PromptInputSelectValue />
+          </PromptInputSelectTrigger>
+          <PromptInputSelectContent>
+            {MODELS.map((m) => (
+              <PromptInputSelectItem key={m.id} value={m.id}>
+                {m.name}
+              </PromptInputSelectItem>
+            ))}
+          </PromptInputSelectContent>
+        </PromptInputSelect>
+        <PromptInputSubmit
+          {...(onStop ? { onStop } : {})}
+          {...(status ? { status } : {})}
+        />
       </PromptInputFooter>
     </PromptInput>
   );
