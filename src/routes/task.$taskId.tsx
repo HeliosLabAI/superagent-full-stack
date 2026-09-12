@@ -351,9 +351,7 @@ function TaskPage() {
                   setModel(id);
                   patchTask(taskId, { model: id });
                 }}
-                onSubmit={({ text, files: attachments }) =>
-                  void sendMessage(attachments?.length ? { text, files: attachments } : { text })
-                }
+                onSubmit={({ text }) => void sendMessage({ text })}
                 placeholder="Reply, refine or assign the next step"
               />
             </div>
