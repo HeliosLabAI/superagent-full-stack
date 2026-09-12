@@ -33,16 +33,20 @@ export function AgentComposer({
 }) {
   return (
     <PromptInput
-      className="rounded-2xl border border-border bg-card shadow-composer"
+      className="rounded-2xl border border-border bg-card shadow-composer transition-shadow focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/25 focus-within:ring-offset-0"
       onSubmit={(message) => {
         const text = (message.text ?? "").trim();
         if (text) onSubmit({ text });
       }}
     >
-      <PromptInputTextarea autoFocus={autoFocus} placeholder={placeholder} />
+      <PromptInputTextarea
+        autoFocus={autoFocus}
+        className="focus-visible:ring-0 focus-visible:outline-none"
+        placeholder={placeholder}
+      />
       <PromptInputFooter className="justify-between border-0">
         <PromptInputSelect onValueChange={onModelChange} value={model}>
-          <PromptInputSelectTrigger>
+          <PromptInputSelectTrigger className="focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none">
             <PromptInputSelectValue />
           </PromptInputSelectTrigger>
           <PromptInputSelectContent>
@@ -54,6 +58,7 @@ export function AgentComposer({
           </PromptInputSelectContent>
         </PromptInputSelect>
         <PromptInputSubmit
+          className="focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none"
           {...(onStop ? { onStop } : {})}
           {...(status ? { status } : {})}
         />
